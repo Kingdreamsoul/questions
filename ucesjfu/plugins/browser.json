@@ -1,0 +1,52 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "questionsetting"
+    },
+    "cordova-plugin-battery-status": {
+      "PACKAGE_NAME": "questionsetting"
+    },
+    "cordova-plugin-camera": {
+      "PACKAGE_NAME": "questionsetting"
+    },
+    "cordova-plugin-media-capture": {
+      "PACKAGE_NAME": "questionsetting"
+    },
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "questionsetting"
+    },
+    "cordova-plugin-dialogs": {
+      "PACKAGE_NAME": "questionsetting"
+    },
+    "cordova-plugin-geolocation": {
+      "PACKAGE_NAME": "questionsetting"
+    },
+    "cordova-plugin-globalization": {
+      "PACKAGE_NAME": "questionsetting"
+    },
+    "cordova-plugin-inappbrowser": {
+      "PACKAGE_NAME": "questionsetting"
+    },
+    "cordova-plugin-network-information": {
+      "PACKAGE_NAME": "questionsetting"
+    },
+    "cordova-plugin-vibration": {
+      "PACKAGE_NAME": "questionsetting"
+    }
+  },
+  "dependent_plugins": {
+    "cordova-plugin-compat": {
+      "PACKAGE_NAME": "questionsetting"
+    },
+    "cordova-plugin-file": {
+      "PACKAGE_NAME": "questionsetting"
+    }
+  }
+}

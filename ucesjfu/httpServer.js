@@ -1,4 +1,5 @@
-﻿// read in the file and force it to be a string by adding “” at the beginning
+﻿//import the configuration information and convert it to the required JSON format
+// read in the file and force it to be a string by adding “” at the beginning
 var fs = require('fs');
 var configtext =
 ""+fs.readFileSync("/home/studentuser/certs/postGISConnection.js");
@@ -20,6 +21,7 @@ var express = require('express');
 var path = require("path");
 var app = express();
 
+//add the body-parser to httpServer so that the uploaded data can be processed
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({
  extended: true
@@ -27,6 +29,13 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 
+//to achieve the 'cross origin request' (i.e. through PhoneGap server to request for data from the httpServer 
+// to avoid error in Chrome and Firefox browser (i.e. XMLHttpRequest cannot load)
+app.use(function(req, res, next) {
+ res.header("Access-Control-Allow-Origin", "*");
+ res.header("Access-Control-Allow-Headers", "X-Requested-With");
+ next();
+});
 
 
 app.get('/getGeoJSON/:tablename/:geomcolumn', function (req,res) {
@@ -161,6 +170,8 @@ console.log("the colnames "+thecolnames);
 });
 
 
+//Post uploaded data of question setting app 
+//(i.e. question,answer1,answer2,answer3, answer4, correct_answer, geom set by user)
 app.post('/uploadData',function(req,res){
 // note that we are using POST here as we are uploading data
 // so the parameters form part of the BODY of the request rather than the RESTful API
@@ -170,10 +181,11 @@ pool.connect(function(err,client,done) {
  console.log("not able to get connection "+ err);
  res.status(400).send(err);
  }
+ //SQL language to insert the data into database
 var geometrystring = "st_geomfromtext('POINT(" + req.body.longitude + " " + req.body.latitude + ")'";
-var querystring = "INSERT into formdata (name,surname,module,language, modulelist, lecturetime, geom) values ('";
-querystring = querystring + req.body.name + "','" + req.body.surname + "','" + req.body.module + "','";
-querystring = querystring + req.body.language + "','" + req.body.modulelist + "','"+ req.body.lecturetime+"',"+geometrystring + "))";
+var querystring = "INSERT into questions (question,answer1,answer2,answer3, answer4, correct_answer, geom) values ('";
+querystring = querystring + req.body.question + "','" + req.body.answer1 + "','" + req.body.answer2 + "','"+ req.body.answer3 + "','"+ req.body.answer4 + "','";
+querystring = querystring + req.body.correct_answer +"',"+geometrystring + "))";
  console.log(querystring);
  client.query( querystring,function(err,result) {
  done();
@@ -181,7 +193,34 @@ querystring = querystring + req.body.language + "','" + req.body.modulelist + "'
  console.log(err);
  res.status(400).send(err);
  }
- res.status(200).send("row inserted");
+ res.status(200).send("setting done!");
+ });
+ });
+});
+
+
+//Post uploaded data of quiz app
+//(i.e. questionid, answer submitted by user. there should be phoneid inserted into database to unique each row if the extracting of uuid or imie id can success)
+app.post('/uploadDataQz',function(req,res){
+// note that we are using POST here as we are uploading data
+// so the parameters form part of the BODY of the request rather than the RESTful API
+console.dir(req.body);
+pool.connect(function(err,client,done) {
+ if(err){
+ console.log("not able to get connection "+ err);
+ res.status(400).send(err);
+ }
+
+var querystringQz = "INSERT into answers (questionid, answer) values ('";
+querystringQz = querystringQz  + req.body.questionid + "','" + req.body.answer +"')";
+ console.log(querystringQz);
+ client.query( querystringQz,function(err,result) {
+ done();
+ if(err){
+ console.log(err);
+ res.status(400).send(err);
+ }
+ res.status(200).send("submit success!");
  });
  });
 });
